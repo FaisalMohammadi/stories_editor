@@ -1,27 +1,33 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:gallery_media_picker/gallery_media_picker.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
-import 'package:stories_editor/src/domain/providers/notifiers/control_provider.dart';
-import 'package:stories_editor/src/domain/providers/notifiers/draggable_widget_notifier.dart';
-import 'package:stories_editor/src/domain/providers/notifiers/scroll_notifier.dart';
-import 'package:stories_editor/src/domain/sevices/save_as_image.dart';
-import 'package:stories_editor/src/presentation/widgets/animated_onTap_button.dart';
+
+import '../../domain/providers/notifiers/control_provider.dart';
+import '../../domain/providers/notifiers/draggable_widget_notifier.dart';
+import '../../domain/providers/notifiers/scroll_notifier.dart';
+import '../../domain/sevices/save_as_image.dart';
 
 class BottomTools extends StatelessWidget {
   final GlobalKey contentKey;
   final Function(String imageUri) onDone;
+  final Function(String imageUri) onShareButtonClick;
   final Widget? onDoneButtonStyle;
+  final Widget? postInStoryButtonWidget;
 
   /// editor background color
   final Color? editorBackgroundColor;
-  const BottomTools(
-      {Key? key,
-      required this.contentKey,
-      required this.onDone,
-      this.onDoneButtonStyle,
-      this.editorBackgroundColor})
-      : super(key: key);
+  const BottomTools({
+    Key? key,
+    required this.contentKey,
+    required this.onDone,
+    required this.onShareButtonClick,
+    this.onDoneButtonStyle,
+    this.editorBackgroundColor,
+    this.postInStoryButtonWidget,
+  }) : super(key: key);
+
+  final primaryColor = const Color(0xff8CBCCB);
 
   @override
   Widget build(BuildContext context) {
@@ -35,8 +41,78 @@ class BottomTools extends StatelessWidget {
               mainAxisSize: MainAxisSize.max,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                /// preview gallery
                 Expanded(
+                  child: _bottomToolButton(
+                    removeWidth: true,
+                    child: postInStoryButtonWidget ??
+                        Text(
+                          "In Story posten",
+                          style: TextStyle(
+                            color: primaryColor,
+                          ),
+                        ),
+                    onTap: () async {
+                      String pngUri;
+                      await takePicture(
+                              contentKey: contentKey,
+                              context: context,
+                              saveToGallery: false)
+                          .then(
+                        (bytes) {
+                          if (bytes != null) {
+                            pngUri = bytes;
+                            onDone(pngUri);
+                          } else {}
+                        },
+                      );
+                    },
+                  ),
+                ),
+
+                _bottomToolButton(
+                  padding: const EdgeInsets.symmetric(horizontal: 15),
+                  child: Icon(
+                    Icons.share,
+                    color: primaryColor,
+                  ),
+                  onTap: () async {
+                    String pngUri;
+                    await takePicture(
+                            contentKey: contentKey,
+                            context: context,
+                            saveToGallery: false)
+                        .then(
+                      (bytes) {
+                        if (bytes != null) {
+                          pngUri = bytes;
+                          onShareButtonClick(pngUri);
+                        } else {}
+                      },
+                    );
+                  },
+                ),
+                _bottomToolButton(
+                  child: const Icon(Icons.download),
+                  onTap: () async {
+                    if (itemNotifier.draggableWidget.isNotEmpty) {
+                      var response = await takePicture(
+                        contentKey: contentKey,
+                        context: context,
+                        saveToGallery: true,
+                      );
+                      if (response) {
+                        // TODO put it in a customizable variable
+                        Fluttertoast.showToast(msg: 'Successfully saved');
+                      } else {
+                        // TODO put it in a customizable variable
+                        Fluttertoast.showToast(msg: 'Error');
+                      }
+                    }
+                  },
+                ),
+
+                /// preview gallery
+                /* Expanded(
                   child: Container(
                     alignment: Alignment.centerLeft,
                     child: SizedBox(
@@ -86,10 +162,10 @@ class BottomTools extends StatelessWidget {
                       ),
                     ),
                   ),
-                ),
+                ), */
 
                 /// center logo
-                if (controlNotifier.middleBottomWidget != null)
+                /* if (controlNotifier.middleBottomWidget != null)
                   Expanded(
                     child: Center(
                       child: Container(
@@ -120,60 +196,62 @@ class BottomTools extends StatelessWidget {
                         ],
                       ),
                     ),
-                  ),
+                  ), */
 
                 /// save final image to gallery
-                Expanded(
+                /* Expanded(
                   child: Container(
                     alignment: Alignment.centerRight,
                     child: Transform.scale(
                       scale: 0.9,
                       child: AnimatedOnTapButton(
-                          onTap: () async {
-                            String pngUri;
-                            await takePicture(
-                                    contentKey: contentKey,
-                                    context: context,
-                                    saveToGallery: false)
-                                .then((bytes) {
-                              if (bytes != null) {
-                                pngUri = bytes;
-                                onDone(pngUri);
-                              } else {}
-                            });
-                          },
-                          child: onDoneButtonStyle ??
-                              Container(
-                                padding: const EdgeInsets.only(
-                                    left: 12, right: 5, top: 4, bottom: 4),
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(15),
-                                    border: Border.all(
-                                        color: Colors.white, width: 1.5)),
-                                child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: const [
-                                      Text(
-                                        'Share',
-                                        style: TextStyle(
-                                            color: Colors.white,
-                                            letterSpacing: 1.5,
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.w400),
-                                      ),
-                                      Padding(
-                                        padding: EdgeInsets.only(left: 5),
-                                        child: Icon(
-                                          Icons.arrow_forward_ios,
-                                          color: Colors.white,
-                                          size: 15,
-                                        ),
-                                      ),
-                                    ]),
-                              )),
+                        onTap: () async {
+                          String pngUri;
+                          await takePicture(
+                                  contentKey: contentKey,
+                                  context: context,
+                                  saveToGallery: false)
+                              .then((bytes) {
+                            if (bytes != null) {
+                              pngUri = bytes;
+                              onDone(pngUri);
+                            } else {}
+                          });
+                        },
+                        child: onDoneButtonStyle ??
+                            Container(
+                              padding: const EdgeInsets.only(
+                                  left: 12, right: 5, top: 4, bottom: 4),
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(15),
+                                  border: Border.all(
+                                      color: Colors.white, width: 1.5)),
+                              child: const Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(
+                                    'Share',
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        letterSpacing: 1.5,
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w400),
+                                  ),
+                                  Padding(
+                                    padding: EdgeInsets.only(left: 5),
+                                    child: Icon(
+                                      Icons.arrow_forward_ios,
+                                      color: Colors.white,
+                                      size: 15,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                      ),
                     ),
                   ),
-                ),
+                ), */
               ],
             ),
           ),
@@ -190,6 +268,31 @@ class BottomTools extends StatelessWidget {
           borderRadius: BorderRadius.circular(10),
           border: Border.all(width: 1.4, color: Colors.white)),
       child: child,
+    );
+  }
+
+  Widget _bottomToolButton({
+    required Widget child,
+    required void Function() onTap,
+    bool removeWidth = false,
+    EdgeInsets padding = const EdgeInsets.all(0),
+  }) {
+    return Padding(
+      padding: padding,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(10),
+        child: Container(
+          padding: const EdgeInsets.all(8),
+          height: 50,
+          width: removeWidth ? null : 50,
+          decoration: BoxDecoration(
+            color: primaryColor.withOpacity(0.4),
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: Center(child: child),
+        ),
+      ),
     );
   }
 }

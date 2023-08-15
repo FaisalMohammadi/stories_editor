@@ -107,10 +107,24 @@ class ControlNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
+  bool? _backgroundImage;
+  bool? get backgroundImage => _backgroundImage;
+  set backgroundImage(bool? value) {
+    _backgroundImage = value;
+    notifyListeners();
+  }
+
   bool _isPhotoFilter = false;
   bool get isPhotoFilter => _isPhotoFilter;
   set isPhotoFilter(bool filter) {
     _isPhotoFilter = filter;
+    notifyListeners();
+  }
+
+  Widget? _postInStoryButtonWidget;
+  Widget? get postInStoryButtonWidget => _postInStoryButtonWidget;
+  set postInStoryButtonWidget(Widget? widget) {
+    _postInStoryButtonWidget = widget;
     notifyListeners();
   }
 }

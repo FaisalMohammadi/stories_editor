@@ -36,6 +36,9 @@ class StoriesEditor extends StatefulWidget {
   /// on done
   final Function(String)? onDone;
 
+  /// on share
+  final Function(String)? onShareButtonClick;
+
   /// on done button Text
   final Widget? onDoneButtonStyle;
 
@@ -54,8 +57,10 @@ class StoriesEditor extends StatefulWidget {
   /// editor init file
   File? starterFile;
 
- final bool? showSaveDraftOption;
- final Function(String draftPath)? saveDraftCallback;
+  final bool? showSaveDraftOption;
+  final Function(String draftPath)? saveDraftCallback;
+  final ImageProvider<Object>? backgroundImage;
+  final Widget? postInStoryButtonText;
 
   StoriesEditor({
     Key? key,
@@ -73,6 +78,9 @@ class StoriesEditor extends StatefulWidget {
     this.starterFile,
     this.showSaveDraftOption,
     this.saveDraftCallback,
+    this.backgroundImage,
+    this.postInStoryButtonText,
+    this.onShareButtonClick,
   }) : super(key: key);
 
   @override
@@ -120,6 +128,7 @@ class _StoriesEditorState extends State<StoriesEditor> {
           child: MainView(
             giphyKey: widget.giphyKey,
             onDone: widget.onDone,
+            onShareButtonClick: widget.onShareButtonClick,
             fontFamilyList: widget.fontFamilyList,
             isCustomFontList: widget.isCustomFontList,
             middleBottomWidget: widget.middleBottomWidget,
@@ -132,6 +141,8 @@ class _StoriesEditorState extends State<StoriesEditor> {
             starterFile: widget.starterFile,
             showSaveDraftOption: widget.showSaveDraftOption,
             saveDraftCallback: widget.saveDraftCallback,
+            backgroundImage: widget.backgroundImage,
+            postInStoryButtonText: widget.postInStoryButtonText,
           ),
         ),
       ),

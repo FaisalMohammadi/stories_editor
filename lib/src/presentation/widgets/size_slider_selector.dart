@@ -27,19 +27,21 @@ class _SizeSliderWidgetState extends State<SizeSliderWidget> {
           children: [
             /// custom paint
             AnimatedContainer(
-                duration: const Duration(milliseconds: 300),
-                padding: EdgeInsets.only(right: _isChange ? 0 : 15),
-                width: _isChange ? 39 : 10,
-                height: 300,
-                child: CustomPaint(
-                  painter: RPSCustomPainter(),
-                  size: Size(screenUtil.screenHeight,
-                      (screenUtil.screenWidth).toDouble()),
-                )),
+              duration: const Duration(milliseconds: 300),
+              margin: EdgeInsets.only(right: _isChange ? 0 : 12),
+              padding: EdgeInsets.only(right: _isChange ? 0 : 10),
+              width: _isChange ? 39 : 10,
+              height: 300,
+              child: CustomPaint(
+                painter: RPSCustomPainter(),
+                size: Size(screenUtil.screenHeight,
+                    (screenUtil.screenWidth).toDouble()),
+              ),
+            ),
 
             /// slider decoration with animations
             AnimatedContainer(
-              padding: EdgeInsets.only(left: _isChange ? 1 : 1, right: 2.1),
+              padding: EdgeInsets.only(left: _isChange ? 2 : 2, right: 2.1),
               duration: const Duration(milliseconds: 300),
               width: _isChange ? 39 : 15,
               height: 300,

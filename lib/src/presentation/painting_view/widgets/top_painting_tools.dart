@@ -14,6 +14,7 @@ class TopPaintingTools extends StatefulWidget {
 }
 
 class _TopPaintingToolsState extends State<TopPaintingTools> {
+  final Color primaryColor = const Color(0xff8CBCCB);
   @override
   Widget build(BuildContext context) {
     return Consumer2<ControlNotifier, PaintingNotifier>(
@@ -32,14 +33,15 @@ class _TopPaintingToolsState extends State<TopPaintingTools> {
                     onTap: paintingNotifier.removeLast,
                     onLongPress: paintingNotifier.clearAll,
                     padding: const EdgeInsets.symmetric(horizontal: 5),
-                    backGroundColor: Colors.black12,
-                    child: Transform.scale(
-                        scale: 0.6,
-                        child: const ImageIcon(
-                          AssetImage('assets/icons/return.png',
-                              package: 'stories_editor'),
-                          color: Colors.white,
-                        )),
+                    backGroundColor: primaryColor,
+                    icon: Transform.scale(
+                      scale: 0.6,
+                      child: ImageIcon(
+                        const AssetImage('assets/icons/return.png',
+                            package: 'stories_editor'),
+                        color: primaryColor,
+                      ),
+                    ),
                   ),
 
                 /// select pen
@@ -49,21 +51,22 @@ class _TopPaintingToolsState extends State<TopPaintingTools> {
                   },
                   colorBorder: paintingNotifier.paintingType == PaintingType.pen
                       ? Colors.black
-                      : Colors.white,
+                      : Colors.transparent,
                   padding: const EdgeInsets.symmetric(horizontal: 5),
                   backGroundColor:
                       paintingNotifier.paintingType == PaintingType.pen
                           ? Colors.white.withOpacity(0.9)
                           : Colors.black12,
-                  child: Transform.scale(
-                      scale: 1.2,
-                      child: ImageIcon(
-                        const AssetImage('assets/icons/pen.png',
-                            package: 'stories_editor'),
-                        color: paintingNotifier.paintingType == PaintingType.pen
-                            ? Colors.black
-                            : Colors.white,
-                      )),
+                  icon: Transform.scale(
+                    scale: 1.2,
+                    child: ImageIcon(
+                      const AssetImage('assets/icons/pen.png',
+                          package: 'stories_editor'),
+                      color: paintingNotifier.paintingType == PaintingType.pen
+                          ? Colors.black
+                          : primaryColor,
+                    ),
+                  ),
                 ),
 
                 /// select marker
@@ -74,22 +77,23 @@ class _TopPaintingToolsState extends State<TopPaintingTools> {
                   colorBorder:
                       paintingNotifier.paintingType == PaintingType.marker
                           ? Colors.black
-                          : Colors.white,
+                          : Colors.transparent,
                   padding: const EdgeInsets.symmetric(horizontal: 5),
                   backGroundColor:
                       paintingNotifier.paintingType == PaintingType.marker
                           ? Colors.white.withOpacity(0.9)
                           : Colors.black12,
-                  child: Transform.scale(
-                      scale: 1.2,
-                      child: ImageIcon(
-                        const AssetImage('assets/icons/marker.png',
-                            package: 'stories_editor'),
-                        color:
-                            paintingNotifier.paintingType == PaintingType.marker
-                                ? Colors.black
-                                : Colors.white,
-                      )),
+                  icon: Transform.scale(
+                    scale: 1.2,
+                    child: ImageIcon(
+                      const AssetImage('assets/icons/marker.png',
+                          package: 'stories_editor'),
+                      color:
+                          paintingNotifier.paintingType == PaintingType.marker
+                              ? Colors.black
+                              : primaryColor,
+                    ),
+                  ),
                 ),
 
                 /// select neon marker
@@ -100,22 +104,22 @@ class _TopPaintingToolsState extends State<TopPaintingTools> {
                   colorBorder:
                       paintingNotifier.paintingType == PaintingType.neon
                           ? Colors.black
-                          : Colors.white,
+                          : Colors.transparent,
                   padding: const EdgeInsets.symmetric(horizontal: 5),
                   backGroundColor:
                       paintingNotifier.paintingType == PaintingType.neon
                           ? Colors.white.withOpacity(0.9)
                           : Colors.black12,
-                  child: Transform.scale(
-                      scale: 1.1,
-                      child: ImageIcon(
-                        const AssetImage('assets/icons/neon.png',
-                            package: 'stories_editor'),
-                        color:
-                            paintingNotifier.paintingType == PaintingType.neon
-                                ? Colors.black
-                                : Colors.white,
-                      )),
+                  icon: Transform.scale(
+                    scale: 1.1,
+                    child: ImageIcon(
+                      const AssetImage('assets/icons/neon.png',
+                          package: 'stories_editor'),
+                      color: paintingNotifier.paintingType == PaintingType.neon
+                          ? Colors.black
+                          : primaryColor,
+                    ),
+                  ),
                 ),
 
                 /// done button
@@ -126,13 +130,14 @@ class _TopPaintingToolsState extends State<TopPaintingTools> {
                   },
                   padding: const EdgeInsets.symmetric(horizontal: 5),
                   backGroundColor: Colors.black12,
-                  child: Transform.scale(
-                      scale: 0.7,
-                      child: const ImageIcon(
-                        AssetImage('assets/icons/check.png',
-                            package: 'stories_editor'),
-                        color: Colors.white,
-                      )),
+                  icon: Transform.scale(
+                    scale: 0.7,
+                    child: ImageIcon(
+                      const AssetImage('assets/icons/check.png',
+                          package: 'stories_editor'),
+                      color: primaryColor,
+                    ),
+                  ),
                 ),
               ],
             ),
