@@ -27,6 +27,7 @@ import 'package:stories_editor/src/presentation/text_editor_view/TextEditor.dart
 import 'package:stories_editor/src/presentation/utils/constants/app_enums.dart';
 import 'package:stories_editor/src/presentation/utils/modal_sheets.dart';
 import 'package:stories_editor/src/presentation/widgets/scrollable_pageView.dart';
+import 'package:render/render.dart';
 
 class MainView extends StatefulWidget {
   /// editor custom font families
@@ -114,6 +115,8 @@ class _MainViewState extends State<MainView> {
   /// delete position
   bool _isDeletePosition = false;
   bool _inAction = false;
+
+  final renderController = RenderController();
 
   @override
   void initState() {
@@ -218,7 +221,8 @@ class _MainViewState extends State<MainView> {
                                   borderRadius: BorderRadius.circular(25),
                                   child: SizedBox(
                                     width: screenUtil.screenWidth,
-                                    child: RepaintBoundary(
+                                    child: Render(
+                                      controller: renderController,
                                       key: contentKey,
                                       child: AnimatedContainer(
                                         duration:
@@ -272,7 +276,7 @@ class _MainViewState extends State<MainView> {
                                                         color:
                                                             Colors.transparent),
                                               ),
-
+                                            
                                               ///list items
                                               ...itemProvider.draggableWidget
                                                   .map((editableItem) {
@@ -299,7 +303,7 @@ class _MainViewState extends State<MainView> {
                                                   },
                                                 );
                                               }),
-
+                                            
                                               /// finger paint
                                               IgnorePointer(
                                                 ignoring: true,
@@ -312,27 +316,25 @@ class _MainViewState extends State<MainView> {
                                                           BorderRadius.circular(
                                                               25),
                                                     ),
-                                                    child: RepaintBoundary(
-                                                      child: SizedBox(
-                                                        width: screenUtil
-                                                            .screenWidth,
-                                                        child: StreamBuilder<
-                                                            List<
-                                                                PaintingModel>>(
-                                                          stream: paintingProvider
-                                                              .linesStreamController
-                                                              .stream,
-                                                          builder: (context,
-                                                              snapshot) {
-                                                            return CustomPaint(
-                                                              painter: Sketcher(
-                                                                lines:
-                                                                    paintingProvider
-                                                                        .lines,
-                                                              ),
-                                                            );
-                                                          },
-                                                        ),
+                                                    child: SizedBox(
+                                                      width: screenUtil
+                                                          .screenWidth,
+                                                      child: StreamBuilder<
+                                                          List<
+                                                              PaintingModel>>(
+                                                        stream: paintingProvider
+                                                            .linesStreamController
+                                                            .stream,
+                                                        builder: (context,
+                                                            snapshot) {
+                                                          return CustomPaint(
+                                                            painter: Sketcher(
+                                                              lines:
+                                                                  paintingProvider
+                                                                      .lines,
+                                                            ),
+                                                          );
+                                                        },
                                                       ),
                                                     ),
                                                   ),
@@ -347,7 +349,7 @@ class _MainViewState extends State<MainView> {
                                 ),
                               ),
                             ),
-
+                                            
                             /// middle text
                             if (itemProvider.draggableWidget.isEmpty &&
                                 !controlNotifier.isTextEditing &&
@@ -372,7 +374,7 @@ class _MainViewState extends State<MainView> {
                                           ])),
                                 ),
                               ),
-
+                                            
                             /// top tools
                             Visibility(
                               visible: !controlNotifier.isTextEditing &&
@@ -387,7 +389,7 @@ class _MainViewState extends State<MainView> {
                                       saveDraftCallback:
                                           widget.saveDraftCallback)),
                             ),
-
+                                            
                             /// delete item when the item is in position
                             DeleteItem(
                               activeItem: _activeItem,
@@ -395,7 +397,7 @@ class _MainViewState extends State<MainView> {
                                   const Duration(milliseconds: 300),
                               isDeletePosition: _isDeletePosition,
                             ),
-
+                                            
                             /// show text editor
                             Visibility(
                               visible: controlNotifier.isTextEditing,
@@ -403,7 +405,7 @@ class _MainViewState extends State<MainView> {
                                 context: context,
                               ),
                             ),
-
+                                            
                             /// show painting sketch
                             Visibility(
                               visible: controlNotifier.isPainting,
@@ -416,6 +418,7 @@ class _MainViewState extends State<MainView> {
                       /// bottom tools
                       if (!kIsWeb)
                         BottomTools(
+                          renderController: renderController,
                           contentKey: contentKey,
                           onDone: (bytes) {
                             setState(() {

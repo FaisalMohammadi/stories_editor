@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
+import 'package:render/render.dart';
 
 import '../../domain/providers/notifiers/control_provider.dart';
 import '../../domain/providers/notifiers/draggable_widget_notifier.dart';
@@ -14,6 +15,7 @@ class BottomTools extends StatelessWidget {
   final Function(String imageUri) onShareButtonClick;
   final Widget? onDoneButtonStyle;
   final Widget? postInStoryButtonWidget;
+  final RenderController? renderController;
 
   /// editor background color
   final Color? editorBackgroundColor;
@@ -25,6 +27,7 @@ class BottomTools extends StatelessWidget {
     this.onDoneButtonStyle,
     this.editorBackgroundColor,
     this.postInStoryButtonWidget,
+    this.renderController,
   }) : super(key: key);
 
   final primaryColor = const Color(0xff8CBCCB);
@@ -52,6 +55,12 @@ class BottomTools extends StatelessWidget {
                           ),
                         ),
                     onTap: () async {
+                      // TODO shoul be done like this but get the duration from the longest video or gif
+                      // final result = await renderController!.captureMotion(
+                      //   Duration(seconds: 4),
+                      //   logLevel: LogLevel.none,
+                      //   format: MotionFormat.mp4,
+                      // );
                       String pngUri;
                       await takePicture(
                               contentKey: contentKey,
