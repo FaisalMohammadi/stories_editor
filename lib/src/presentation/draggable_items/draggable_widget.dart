@@ -14,6 +14,7 @@ import 'package:stories_editor/src/domain/providers/notifiers/text_editing_notif
 import 'package:stories_editor/src/presentation/utils/constants/app_enums.dart';
 import 'package:stories_editor/src/presentation/widgets/animated_onTap_button.dart';
 import 'package:stories_editor/src/presentation/widgets/file_image_bg.dart';
+import 'package:video_player/video_player.dart';
 
 class DraggableWidget extends StatelessWidget {
   final EditableItem draggableWidget;
@@ -134,7 +135,7 @@ class DraggableWidget extends StatelessWidget {
         break;
 
       case ItemType.video:
-        overlayWidget = const Center();
+        overlayWidget = _getVideoPlayerWidget(_controlProvider);
     }
 
     /// set widget data position on main screen
@@ -164,6 +165,26 @@ class DraggableWidget extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Widget _getVideoPlayerWidget(ControlNotifier controlProvider) {
+    if (controlProvider.videoPlayerController != null &&
+        controlProvider.videoPlayerController!.value.isInitialized) {
+      final ScreenUtil screenUtil = ScreenUtil();
+      GlobalKey paintKey = GlobalKey();
+      return SizedBox(
+        height: screenUtil.screenHeight,
+        width: screenUtil.screenWidth,
+        child: RepaintBoundary(
+          key: paintKey,
+          child: Center(
+            child: VideoPlayer(controlProvider.videoPlayerController!),
+          ),
+        ),
+      );
+    } else {
+      return const CircularProgressIndicator();
+    }
   }
 
   /// text widget

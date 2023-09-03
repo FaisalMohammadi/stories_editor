@@ -81,7 +81,7 @@ class TopTextTools extends StatelessWidget {
                       ),
                     ),
                   ),
-                  ToolButton(
+                  /* ToolButton(
                     padding: const EdgeInsets.only(right: 10),
                     onTap: () {
                       editorNotifier.isTextAnimation =
@@ -123,7 +123,7 @@ class TopTextTools extends StatelessWidget {
                         ),
                       ),
                     ),
-                  ),
+                  ), */
 
                   /// done button
                   ToolButton(

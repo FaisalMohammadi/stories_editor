@@ -1,8 +1,11 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'package:render/render.dart';
+import 'package:stories_editor/src/domain/sevices/export_the_result.dart';
 
 import '../../domain/providers/notifiers/control_provider.dart';
 import '../../domain/providers/notifiers/draggable_widget_notifier.dart';
@@ -55,25 +58,47 @@ class BottomTools extends StatelessWidget {
                           ),
                         ),
                     onTap: () async {
-                      // TODO shoul be done like this but get the duration from the longest video or gif
-                      // final result = await renderController!.captureMotion(
-                      //   Duration(seconds: 4),
-                      //   logLevel: LogLevel.none,
-                      //   format: MotionFormat.mp4,
-                      // );
-                      String pngUri;
-                      await takePicture(
+                      String filePath = await exportTheResultPath(
+                        itemNotifier: itemNotifier,
+                        controlNotifier: controlNotifier,
+                        renderController: renderController,
+                      );
+                      /* if (itemNotifier.draggableWidget.length == 1) {
+                        filePath = controlNotifier.mediaPath;
+                      } else {
+                        controlNotifier.videoPlayerController!
+                            .seekTo(Duration.zero);
+                        Duration videoDuration = controlNotifier
+                            .videoPlayerController!.value.duration;
+                        // TODO shoul be done like this but get the duration from the longest video or gif
+                        final result = await renderController!.captureMotion(
+                          videoDuration,
+                          logLevel: LogLevel.none,
+                          format: MovFormat(
+                            audio: [
+                              RenderAudio.file(
+                                File(controlNotifier.mediaPath),
+                              ),
+                            ],
+                          ),
+                        );
+
+                        filePath = result.output.path;
+                      } */
+                      onDone(filePath);
+
+                      /* await takePicture(
                               contentKey: contentKey,
                               context: context,
                               saveToGallery: false)
                           .then(
                         (bytes) {
                           if (bytes != null) {
-                            pngUri = bytes;
-                            onDone(pngUri);
+                            filePath = bytes;
+                            
                           } else {}
                         },
-                      );
+                      ); */
                     },
                   ),
                 ),

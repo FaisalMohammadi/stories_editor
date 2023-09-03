@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gallery_media_picker/src/presentation/pages/gallery_media_picker_controller.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:provider/provider.dart';
 import 'package:stories_editor/src/domain/models/editable_items.dart';
@@ -28,6 +29,8 @@ import 'package:stories_editor/src/presentation/utils/constants/app_enums.dart';
 import 'package:stories_editor/src/presentation/utils/modal_sheets.dart';
 import 'package:stories_editor/src/presentation/widgets/scrollable_pageView.dart';
 import 'package:render/render.dart';
+import 'package:path/path.dart' as path;
+import 'package:video_player/video_player.dart';
 
 class MainView extends StatefulWidget {
   /// editor custom font families
@@ -117,6 +120,7 @@ class _MainViewState extends State<MainView> {
   bool _inAction = false;
 
   final renderController = RenderController();
+  VideoPlayerController? videoPlayerController;
 
   @override
   void initState() {
@@ -148,19 +152,8 @@ class _MainViewState extends State<MainView> {
         _control.colorList = widget.colorList;
       }
       if (widget.starterFile != null) {
-        final GalleryMediaPickerController provider =
-            GalleryMediaPickerController();
+        _addImageOrVideoAsEditableItem(_control, _itemProvider);
 
-        _control.mediaPath = provider.pathList.isNotEmpty
-            ? provider.pathList[0].name
-            : widget
-                .starterFile!.path; //TODO create PickedAssetModel() from file
-        _itemProvider.draggableWidget.insert(
-            0,
-            EditableItem()
-              ..type = ItemType.image
-              ..position = const Offset(0.0, 0)
-              ..scale = 1.2);
         setState(() {});
       }
     });
@@ -169,6 +162,7 @@ class _MainViewState extends State<MainView> {
 
   @override
   void dispose() {
+    videoPlayerController!.dispose();
     super.dispose();
   }
 
@@ -276,7 +270,7 @@ class _MainViewState extends State<MainView> {
                                                         color:
                                                             Colors.transparent),
                                               ),
-                                            
+
                                               ///list items
                                               ...itemProvider.draggableWidget
                                                   .map((editableItem) {
@@ -303,7 +297,7 @@ class _MainViewState extends State<MainView> {
                                                   },
                                                 );
                                               }),
-                                            
+
                                               /// finger paint
                                               IgnorePointer(
                                                 ignoring: true,
@@ -316,25 +310,28 @@ class _MainViewState extends State<MainView> {
                                                           BorderRadius.circular(
                                                               25),
                                                     ),
-                                                    child: SizedBox(
-                                                      width: screenUtil
-                                                          .screenWidth,
-                                                      child: StreamBuilder<
-                                                          List<
-                                                              PaintingModel>>(
-                                                        stream: paintingProvider
-                                                            .linesStreamController
-                                                            .stream,
-                                                        builder: (context,
-                                                            snapshot) {
-                                                          return CustomPaint(
-                                                            painter: Sketcher(
-                                                              lines:
-                                                                  paintingProvider
-                                                                      .lines,
-                                                            ),
-                                                          );
-                                                        },
+                                                    // repaint
+                                                    child: RepaintBoundary(
+                                                      child: SizedBox(
+                                                        width: screenUtil
+                                                            .screenWidth,
+                                                        child: StreamBuilder<
+                                                            List<
+                                                                PaintingModel>>(
+                                                          stream: paintingProvider
+                                                              .linesStreamController
+                                                              .stream,
+                                                          builder: (context,
+                                                              snapshot) {
+                                                            return CustomPaint(
+                                                              painter: Sketcher(
+                                                                lines:
+                                                                    paintingProvider
+                                                                        .lines,
+                                                              ),
+                                                            );
+                                                          },
+                                                        ),
                                                       ),
                                                     ),
                                                   ),
@@ -349,7 +346,7 @@ class _MainViewState extends State<MainView> {
                                 ),
                               ),
                             ),
-                                            
+
                             /// middle text
                             if (itemProvider.draggableWidget.isEmpty &&
                                 !controlNotifier.isTextEditing &&
@@ -374,7 +371,7 @@ class _MainViewState extends State<MainView> {
                                           ])),
                                 ),
                               ),
-                                            
+
                             /// top tools
                             Visibility(
                               visible: !controlNotifier.isTextEditing &&
@@ -389,7 +386,7 @@ class _MainViewState extends State<MainView> {
                                       saveDraftCallback:
                                           widget.saveDraftCallback)),
                             ),
-                                            
+
                             /// delete item when the item is in position
                             DeleteItem(
                               activeItem: _activeItem,
@@ -397,7 +394,7 @@ class _MainViewState extends State<MainView> {
                                   const Duration(milliseconds: 300),
                               isDeletePosition: _isDeletePosition,
                             ),
-                                            
+
                             /// show text editor
                             Visibility(
                               visible: controlNotifier.isTextEditing,
@@ -405,7 +402,7 @@ class _MainViewState extends State<MainView> {
                                 context: context,
                               ),
                             ),
-                                            
+
                             /// show painting sketch
                             Visibility(
                               visible: controlNotifier.isPainting,
@@ -629,5 +626,90 @@ class _MainViewState extends State<MainView> {
 
     /// set vibrate
     HapticFeedback.lightImpact();
+  }
+
+  Future<File> _getFileFromPath(String filePath) async {
+    // Get the application's documents directory
+    Directory appDocumentsDirectory = await getApplicationDocumentsDirectory();
+
+    // Create a File object using the directory and file path
+    File file = File('${appDocumentsDirectory.path}/$filePath');
+
+    return file;
+  }
+
+  ItemType _getItemType(ControlNotifier controlNotifier) {
+    final fileExtension =
+        path.extension(controlNotifier.mediaPath).toLowerCase();
+
+    ItemType itemType;
+
+    switch (fileExtension) {
+      case ".mp4":
+      case ".gif":
+      case ".mov":
+        itemType = ItemType.video;
+        break;
+      case ".png":
+      case ".jpeg":
+      case ".jpg":
+        itemType = ItemType.image;
+        break;
+      default:
+        throw Exception("unknown file type $fileExtension");
+    }
+    return itemType;
+  }
+
+  _addImageOrVideoAsEditableItem(
+    ControlNotifier control,
+    DraggableWidgetNotifier itemProvider,
+  ) {
+    final GalleryMediaPickerController provider =
+        GalleryMediaPickerController();
+
+    control.mediaPath = provider.pathList.isNotEmpty
+        ? provider.pathList[0].name
+        : widget.starterFile!.path;
+
+    final fileExtension = path.extension(control.mediaPath).toLowerCase();
+
+    switch (fileExtension) {
+      case ".mp4":
+      case ".gif":
+      case ".mov":
+        File file = File(control.mediaPath);
+        control.videoPlayerController = VideoPlayerController.file(file);
+        videoPlayerController = control.videoPlayerController;
+
+        control.videoPlayerController!.addListener(() {
+          WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+            setState(() {});
+          });
+        });
+        control.videoPlayerController!.initialize();
+        control.videoPlayerController!.setLooping(true);
+        control.videoPlayerController!.play();
+        itemProvider.draggableWidget.insert(
+          0,
+          EditableItem()
+            ..type = ItemType.video
+            ..position = const Offset(0.0, 0)
+            ..scale = 1,
+        );
+        break;
+      case ".png":
+      case ".jpeg":
+      case ".jpg":
+        itemProvider.draggableWidget.insert(
+            0,
+            EditableItem()
+              ..type = ItemType.image
+              ..position = const Offset(0.0, 0)
+              ..scale = 1.2);
+        break;
+      default:
+        throw Exception("unknown file type $fileExtension");
+    }
   }
 }
