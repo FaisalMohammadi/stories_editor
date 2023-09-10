@@ -77,6 +77,8 @@ class MainView extends StatefulWidget {
   ImageProvider<Object>? backgroundImage;
   final Widget? postInStoryButtonText;
 
+  final Widget? middleText;
+
   MainView({
     Key? key,
     required this.giphyKey,
@@ -96,6 +98,7 @@ class MainView extends StatefulWidget {
     this.backgroundImage,
     this.postInStoryButtonText,
     this.onShareButtonClick,
+    this.middleText,
   }) : super(key: key);
 
   @override
@@ -197,7 +200,6 @@ class _MainViewState extends State<MainView> {
                     children: [
                       Expanded(
                         child: Stack(
-                          alignment: Alignment.center,
                           children: [
                             ///gradient container
                             /// this container will contain all widgets(image/texts/draws/sticker)
@@ -264,11 +266,12 @@ class _MainViewState extends State<MainView> {
                                               /// in this case photo view works as a main background container to manage
                                               /// the gestures of all movable items.
                                               PhotoView.customChild(
+                                                childSize: Size.zero,
                                                 child: Container(),
                                                 backgroundDecoration:
                                                     const BoxDecoration(
-                                                        color:
-                                                            Colors.transparent),
+                                                  color: Colors.transparent,
+                                                ),
                                               ),
 
                                               ///list items
@@ -355,10 +358,10 @@ class _MainViewState extends State<MainView> {
                                 ignoring: true,
                                 child: Align(
                                   alignment: const Alignment(0, -0.1),
-                                  child: Text('Tap to type',
-                                      style: TextStyle(
-                                          fontFamily: 'Alegreya',
-                                          package: 'stories_editor',
+                                  child: widget.middleText ??
+                                      Text(
+                                        'Tap to type',
+                                        style: TextStyle(
                                           fontWeight: FontWeight.w500,
                                           fontSize: 30,
                                           color: Colors.white.withOpacity(0.8),
@@ -368,7 +371,9 @@ class _MainViewState extends State<MainView> {
                                                 blurRadius: 3.0,
                                                 color: Colors.black45
                                                     .withOpacity(0.3))
-                                          ])),
+                                          ],
+                                        ),
+                                      ),
                                 ),
                               ),
 

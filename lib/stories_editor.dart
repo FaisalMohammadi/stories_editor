@@ -62,6 +62,8 @@ class StoriesEditor extends StatefulWidget {
   final ImageProvider<Object>? backgroundImage;
   final Widget? postInStoryButtonText;
 
+  final Widget? middleText;
+
   StoriesEditor({
     Key? key,
     required this.giphyKey,
@@ -81,6 +83,7 @@ class StoriesEditor extends StatefulWidget {
     this.backgroundImage,
     this.postInStoryButtonText,
     this.onShareButtonClick,
+    this.middleText,
   }) : super(key: key);
 
   @override
@@ -143,6 +146,7 @@ class _StoriesEditorState extends State<StoriesEditor> {
             saveDraftCallback: widget.saveDraftCallback,
             backgroundImage: widget.backgroundImage,
             postInStoryButtonText: widget.postInStoryButtonText,
+            middleText: widget.middleText,
           ),
         ),
       ),

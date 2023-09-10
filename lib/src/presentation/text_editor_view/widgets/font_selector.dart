@@ -17,7 +17,7 @@ class FontSelector extends StatelessWidget {
         return Container(
           height: screenUtil.screenWidth * 0.1,
           width: screenUtil.screenWidth,
-          alignment: Alignment.center,
+          alignment: Alignment.bottomCenter,
           child: PageView.builder(
             controller: editorNotifier.fontFamilyController,
             itemCount: controlNotifier.fontList!.length,
@@ -45,20 +45,18 @@ class FontSelector extends StatelessWidget {
                           : Colors.black.withOpacity(0.4),
                       shape: BoxShape.circle,
                       border: Border.all(color: Colors.white)),
-                  child: Center(
-                    child: Text(
-                      'Aa',
-                      style: TextStyle(
-                              fontFamily: controlNotifier.fontList![index],
-                              package: controlNotifier.isCustomFontList
-                                  ? null
-                                  : 'stories_editor')
-                          .copyWith(
-                              color: index == editorNotifier.fontFamilyIndex
-                                  ? Colors.red
-                                  : Colors.white,
-                              fontWeight: FontWeight.bold),
-                    ),
+                  child: Text(
+                    'Aa',
+                    style: TextStyle(
+                            fontFamily: controlNotifier.fontList![index],
+                            package: controlNotifier.isCustomFontList
+                                ? null
+                                : 'stories_editor')
+                        .copyWith(
+                            color: index == editorNotifier.fontFamilyIndex
+                                ? Colors.red
+                                : Colors.white,
+                            fontWeight: FontWeight.bold),
                   ),
                 ),
               );

@@ -46,13 +46,14 @@ class _TextEditorState extends State<TextEditor> {
           builder: (_, controlNotifier, editorNotifier, __) {
             return Scaffold(
               backgroundColor: Colors.transparent,
+              bottomNavigationBar: const SizedBox.shrink(),
               body: GestureDetector(
                 /// onTap => Close view and create/modify item object
                 onTap: () => _onTap(context, controlNotifier, editorNotifier),
                 child: Container(
                     decoration:
                         BoxDecoration(color: Colors.black.withOpacity(0.5)),
-                    height: screenUtil.screenHeight,
+                    height: double.infinity,
                     width: screenUtil.screenWidth,
                     child: Stack(
                       children: [
@@ -61,13 +62,13 @@ class _TextEditorState extends State<TextEditor> {
                           alignment: Alignment.center,
                           child: TextFieldWidget(),
                         ),
-
+              
                         /// text size
                         const Align(
                           alignment: Alignment.centerLeft,
                           child: SizeSliderWidget(),
                         ),
-
+              
                         /// top tools
                         SafeArea(
                           child: Align(
@@ -77,38 +78,36 @@ class _TextEditorState extends State<TextEditor> {
                                     context, controlNotifier, editorNotifier),
                               )),
                         ),
-
+              
                         /// font family selector (bottom)
-                        Positioned(
-                          bottom: screenUtil.screenHeight * 0.21,
+                        Visibility(
+                          visible: editorNotifier.isFontFamily &&
+                              !editorNotifier.isTextAnimation,
+                          child: const Align(
+                            alignment: Alignment.bottomCenter,
+                            child: Padding(
+                              padding: EdgeInsets.only(bottom: 20),
+                              child: FontSelector(),
+                            ),
+                          ),
+                        ),
+              
+                        /// font color selector (bottom)
+                        Padding(
+                          padding: const EdgeInsets.only(left: 20),
                           child: Visibility(
-                            visible: editorNotifier.isFontFamily &&
+                            visible: !editorNotifier.isFontFamily &&
                                 !editorNotifier.isTextAnimation,
                             child: const Align(
                               alignment: Alignment.bottomCenter,
                               child: Padding(
                                 padding: EdgeInsets.only(bottom: 20),
-                                child: FontSelector(),
+                                child: ColorSelector(),
                               ),
                             ),
                           ),
                         ),
-
-                        /// font color selector (bottom)
-                        Positioned(
-                          bottom: screenUtil.screenHeight * 0.21,
-                          child: Visibility(
-                              visible: !editorNotifier.isFontFamily &&
-                                  !editorNotifier.isTextAnimation,
-                              child: const Align(
-                                alignment: Alignment.bottomCenter,
-                                child: Padding(
-                                  padding: EdgeInsets.only(bottom: 20),
-                                  child: ColorSelector(),
-                                ),
-                              )),
-                        ),
-
+              
                         /// font animation selector (bottom
                         Positioned(
                           bottom: screenUtil.screenHeight * 0.21,

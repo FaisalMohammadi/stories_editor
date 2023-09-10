@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:stories_editor/src/domain/providers/notifiers/control_provider.dart';
 import 'package:stories_editor/src/domain/providers/notifiers/text_editing_notifier.dart';
 
+/// TODO fix textfield background color and text color 
 class TextFieldWidget extends StatelessWidget {
   const TextFieldWidget({Key? key}) : super(key: key);
 

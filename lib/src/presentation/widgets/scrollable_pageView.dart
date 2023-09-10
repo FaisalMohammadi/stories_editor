@@ -91,32 +91,33 @@ class _ScrollablePageViewState extends State<ScrollablePageView> {
   Widget build(BuildContext context) {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {});
     return RawGestureDetector(
-        gestures: <Type, GestureRecognizerFactory>{
-          VerticalDragGestureRecognizer: GestureRecognizerFactoryWithHandlers<
-                  VerticalDragGestureRecognizer>(
-              () => VerticalDragGestureRecognizer(),
-              (VerticalDragGestureRecognizer instance) {
-            if (widget.scrollPhysics) {
-              instance
-                ..onStart = _handleDragStart
-                ..onUpdate = _handleDragUpdate
-                ..onEnd = _handleDragEnd
-                ..onCancel = _handleDragCancel;
-            } else {
-              instance
-                ..onStart = null
-                ..onUpdate = null
-                ..onEnd = null
-                ..onCancel = null;
-            }
-          })
-        },
-        behavior: HitTestBehavior.opaque,
-        child: PageView(
-          controller: _pageController,
-          scrollDirection: Axis.vertical,
-          physics: const NeverScrollableScrollPhysics(),
-          children: [widget.mainView, widget.gallery],
-        ));
+      gestures: <Type, GestureRecognizerFactory>{
+        VerticalDragGestureRecognizer:
+            GestureRecognizerFactoryWithHandlers<VerticalDragGestureRecognizer>(
+                () => VerticalDragGestureRecognizer(),
+                (VerticalDragGestureRecognizer instance) {
+          if (widget.scrollPhysics) {
+            instance
+              ..onStart = _handleDragStart
+              ..onUpdate = _handleDragUpdate
+              ..onEnd = _handleDragEnd
+              ..onCancel = _handleDragCancel;
+          } else {
+            instance
+              ..onStart = null
+              ..onUpdate = null
+              ..onEnd = null
+              ..onCancel = null;
+          }
+        })
+      },
+      behavior: HitTestBehavior.opaque,
+      child: PageView(
+        controller: _pageController,
+        scrollDirection: Axis.vertical,
+        physics: const NeverScrollableScrollPhysics(),
+        children: [widget.mainView, widget.gallery],
+      ),
+    );
   }
 }
