@@ -165,7 +165,7 @@ class _MainViewState extends State<MainView> {
 
   @override
   void dispose() {
-    videoPlayerController!.dispose();
+    videoPlayerController?.dispose();
     super.dispose();
   }
 
