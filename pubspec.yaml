@@ -13,7 +13,7 @@ dependencies:
   # state management
   provider: ^6.0.4
   # image
-  image: ^3.2.2
+  image: ^4.1.7
   path_provider: ^2.0.11
   photo_view: ^0.14.0
   # with this ref fix `Looking up a deactivated widget's ancestor is unsafe`.
@@ -24,10 +24,10 @@ dependencies:
   image_gallery_saver: ^1.7.1
   #own packages
   #gallery_media_picker: ^0.1.0
-  gallery_media_picker:
-    git:
-      url: https://github.com/intellign/gallery_media_picker.git
-     # ref: master
+  #gallery_media_picker:
+  #  git:
+  #    url: https://github.com/intellign/gallery_media_picker.git
+  #   # ref: master
 
   modal_gif_picker: ^0.0.2
   # painting
