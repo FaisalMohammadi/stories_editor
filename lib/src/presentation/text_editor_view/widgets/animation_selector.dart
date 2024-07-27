@@ -12,9 +12,9 @@ class AnimationSelector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var _size = MediaQuery.of(context).size;
     return Consumer2<TextEditingNotifier, ControlNotifier>(
       builder: (context, editorNotifier, controlNotifier, child) {
+        Size _size = MediaQuery.sizeOf(context);
         return Container(
           height: _size.width * 0.1,
           width: _size.width,

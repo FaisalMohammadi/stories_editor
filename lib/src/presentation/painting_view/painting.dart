@@ -126,24 +126,25 @@ class _PaintingState extends State<Painting> {
             child: Align(
               alignment: Alignment.topCenter,
               child: Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(25),
-                  ),
-                  width: MediaQuery.of(context).size.width,
-                  height: Platform.isIOS
-                      ? (screenSize.size.height - 132) -
-                          screenSize.viewPadding.top
-                      : MediaQuery.of(context).size.height - 132,
-                  child: StreamBuilder<PaintingModel>(
-                      stream:
-                          paintingNotifier.currentLineStreamController.stream,
-                      builder: (context, snapshot) {
-                        return CustomPaint(
-                          painter: Sketcher(
-                            lines: line == null ? [] : [line!],
-                          ),
-                        );
-                      })),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(25),
+                ),
+                width: MediaQuery.sizeOf(context).width,
+                height: Platform.isIOS
+                    ? (screenSize.size.height - 132) -
+                        screenSize.viewPadding.top
+                    : MediaQuery.sizeOf(context).height - 132,
+                child: StreamBuilder<PaintingModel>(
+                  stream: paintingNotifier.currentLineStreamController.stream,
+                  builder: (context, snapshot) {
+                    return CustomPaint(
+                      painter: Sketcher(
+                        lines: line == null ? [] : [line!],
+                      ),
+                    );
+                  },
+                ),
+              ),
             ),
           ),
         ),
