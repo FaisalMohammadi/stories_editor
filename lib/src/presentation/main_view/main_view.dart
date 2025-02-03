@@ -6,7 +6,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:gallery_media_picker/src/presentation/pages/gallery_media_picker_controller.dart';
+// import 'package:gallery_media_picker/src/presentation/pages/gallery_media_picker_controller.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:provider/provider.dart';
@@ -670,12 +670,12 @@ class _MainViewState extends State<MainView> {
     ControlNotifier control,
     DraggableWidgetNotifier itemProvider,
   ) {
-    final GalleryMediaPickerController provider =
-        GalleryMediaPickerController();
+    /* final GalleryMediaPickerController provider =
+        GalleryMediaPickerController(); */
 
-    control.mediaPath = provider.pathList.isNotEmpty
+    /* control.mediaPath = provider.pathList.isNotEmpty
         ? provider.pathList[0].name
-        : widget.starterFile!.path;
+        : widget.starterFile!.path; */
 
     final fileExtension = path.extension(control.mediaPath).toLowerCase();
 
